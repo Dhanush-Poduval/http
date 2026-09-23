@@ -7,6 +7,7 @@
 #include <sys/un.h>
 #include <unistd.h>
 #define MAX_QUEUE_CONNECTIONS 250
+// sock legit_sock;
 int main() {
   printf("Server Code \n");
   char port[50];
@@ -68,21 +69,25 @@ int main() {
   }
   char status_line[100] = "HTTP/1.1 200 OK \r\n";
   char headers[100] = "Content-Type: text/html\r\n\r\n";
+
+  char message_send[300] =
+      "HTTP/1.1 200 OK \r\n Content-Type: text/html\r\n\r\n "
+      "<html><body><h1>Hello Client u are cooked </h1></body></html>\r\n";
   char body[100] =
       "<html><body><h1>Hello Client u are cooked </h1></body></html>\r\n";
   FILE *fd = fopen("./src/http.html", "r");
   if (fd == NULL) {
     perror("Error in file opening");
   }
-  int a = send(new_fd, status_line, strlen(status_line), 0);
+  int a = send(new_fd, message_send, strlen(message_send), 0);
   int b = send(new_fd, headers, strlen(headers), 0);
   char file_char;
-  while ((file_char = getc(fd)) != EOF) {
-    // putchar(file_char);
-    send(new_fd, &file_char, 1, 0);
-  }
+  // while ((file_char = getc(fd)) != EOF) {
+  //   // putchar(file_char);
+  //   // send(new_fd, body, 1, 0);
+  // }
 
-  // int c =send(new_fd,body,strlen(body),0);
+  int c = send(new_fd, body, strlen(body), 0);
   if (a != -1) {
     printf("Sent the status line number of bytes : %d\n", a);
     // printf("Sent the header content of size : %d\n",b);
